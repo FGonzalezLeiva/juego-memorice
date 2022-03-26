@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorice</title>
+</head>
+<body>
+    <h1>Juego</h1>
+    <div id="puntaje"></div>
+    <div id="LeyendaB"></div>
+    <div id='tiempo'></div>
+    <div id="palabra"></div>
+    <div id="formularioentrada"></div>
+    <div id="LeyendaA"></div>
+    <script>
+        let tiempo = 5;
+        let palabras = [{trama: 'animales',contenido:['oso','foca','jirafa','orca','perro','gato','camaleón','sapo','paloma']}]
+        let racha = 0;
+        let puntaje = 0;
+        let nivel = 3
+        document.getElementById('tiempo').innerHTML = tiempo
+
+        const temporizador = setInterval(()=>{
+            tiempo--
+            document.getElementById('tiempo').innerHTML = tiempo
+            if(tiempo<=0){clearTimeout(temporizador)}
+            
+        },1000)
+
+        //console.log(arr)
+        let respuestas = []
+        const questions = (nivel)=>{
+            console.log('ejecuté questions')
+            let arr = []
+            for(let i=0;i<nivel;i++){
+                let aleatorio = Math.round(Math.random()*7)
+                arr.push(aleatorio)
+            }
+            for(let i=0;i<arr.length;i++){
+                const palabra = setTimeout(()=>{
+                    document.getElementById('palabra').innerHTML = palabras[0].contenido[arr[i]]
+                    respuestas.push(palabras[0].contenido[arr[i]])
+                    if(i==arr.length-1){
+                        console.log('mostrar caja de entrada')
+                        document.getElementById('formularioentrada').innerHTML = '<input type="text" id="respuesta" name="lname" onkeypress="respuesta(event)">'
+                        console.log(respuestas)
+                    }
+                },1000*i)
+            }
+        }
+        questions(nivel)
+
+        const respuesta = (a)=>{
+            if (a.keyCode === 13 && !a.shiftKey) {
+                const answer = document.getElementById("respuesta").value
+                document.getElementById('respuesta').value = ''
+                a.preventDefault();
+                console.log(answer,respuestas[0],answer===respuestas[0])
+                if(answer===respuestas[0]){
+                    respuestas.shift()
+                    racha ++
+                    puntaje ++
+                    document.getElementById('LeyendaB').innerHTML = 'Racha de '+racha
+                    document.getElementById('puntaje').innerHTML = 'Puntaje '+puntaje
+                    tiempo +=3
+                    document.getElementById('LeyendaA').innerHTML = "<h1>Correcto!</h1>"
+                }else{
+                    respuestas.shift()
+                    tiempo -=3
+                    racha = 0
+                    document.getElementById('LeyendaB').innerHTML = 'Racha de '+racha
+                    document.getElementById('LeyendaA').innerHTML = "<h1>Mala!</h1>"
+                }
+               
+                if(respuestas.length==0){
+                    nivel ++
+                    questions(nivel)
+                }
+
+            }
+        }
+        
+        
+    </script>
+</body>
+</html>
