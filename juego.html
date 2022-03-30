@@ -15,19 +15,14 @@
     <div id="formularioentrada"></div>
     <div id="LeyendaA"></div>
     <script>
-        let tiempo = 5;
+        let tiempo = 30;
         let palabras = [{trama: 'animales',contenido:['oso','foca','jirafa','orca','perro','gato','camaleón','sapo','paloma']}]
         let racha = 0;
         let puntaje = 0;
         let nivel = 3
         document.getElementById('tiempo').innerHTML = tiempo
 
-        const temporizador = setInterval(()=>{
-            tiempo--
-            document.getElementById('tiempo').innerHTML = tiempo
-            if(tiempo<=0){clearTimeout(temporizador)}
-            
-        },1000)
+
 
         //console.log(arr)
         let respuestas = []
@@ -40,18 +35,36 @@
             }
             for(let i=0;i<arr.length;i++){
                 const palabra = setTimeout(()=>{
-                    document.getElementById('palabra').innerHTML = palabras[0].contenido[arr[i]]
+                    document.getElementById('palabra').innerHTML = i+1+" "+palabras[0].contenido[arr[i]]
                     respuestas.push(palabras[0].contenido[arr[i]])
                     if(i==arr.length-1){
                         console.log('mostrar caja de entrada')
                         document.getElementById('formularioentrada').innerHTML = '<input type="text" id="respuesta" name="lname" onkeypress="respuesta(event)">'
+                        document.getElementById('respuesta').select()
                         console.log(respuestas)
                     }
                 },1000*i)
             }
         }
-        questions(nivel)
+        const inicio = ()=>{
+            //clearTimeout(temporizador)
+            document.getElementById('tiempo').innerHTML = "<h1>Instrucciónes</h1>"
+            document.getElementById('palabra').innerHTML = "Aparecerán una serie de palabras enumeradas en pantalla debes escribirlas en orden una a una y presionar enter. Cuando estés listo presiona el botón"
+            document.getElementById('formularioentrada').innerHTML = '<h1>empezar</h1><br><button onclick="inizializar()">Empezar</button>'
+            
+        }
 
+        const inizializar = ()=>{
+            const temporizador = setInterval(()=>{
+                tiempo--
+                document.getElementById('tiempo').innerHTML = tiempo
+                if(tiempo<=0){clearTimeout(temporizador);document.getElementById('formularioentrada').innerHTML = '<h1>TIEMPO!!</h1><br><button onclick="reboot()">Restart</button>'}
+                
+            },1000)
+            questions(nivel)
+        }
+        
+        
         const respuesta = (a)=>{
             if (a.keyCode === 13 && !a.shiftKey) {
                 const answer = document.getElementById("respuesta").value
@@ -73,7 +86,6 @@
                     document.getElementById('LeyendaB').innerHTML = 'Racha de '+racha
                     document.getElementById('LeyendaA').innerHTML = "<h1>Mala!</h1>"
                 }
-               
                 if(respuestas.length==0){
                     nivel ++
                     questions(nivel)
@@ -82,6 +94,22 @@
             }
         }
         
+        const reboot = ()=>{
+            let tiempo = 30;
+            let racha = 0;
+            let puntaje = 0;
+            let nivel = 3
+            respuestas = []
+            questions(3)
+            const temporizador = setInterval(()=>{
+                tiempo--
+                document.getElementById('tiempo').innerHTML = tiempo
+                if(tiempo<=0){clearTimeout(temporizador);document.getElementById('formularioentrada').innerHTML = '<h1>TIEMPO!!</h1><br><button onclick="reboot()">Restart</button>'}
+                
+            },1000)
+        }
+
+        inicio()
         
     </script>
 </body>
